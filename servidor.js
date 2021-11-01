@@ -12,19 +12,14 @@ app.use(express.json());
 mongoose.connect("mongodb+srv://prog_web:ProgWebMinTic2022@clusterprogweb.vevqa.mongodb.net/JobsTI?retryWrites=true&w=majority");
 
 
+app.use(router);
+app.listen(3000, () => {
+    console.log("Server is running in port 3000!");
+});
+
 //CRUD operations
 router.get('/', (req, res) => {
     res.send("El inicio de mi API")
-});
-
-router.get('/persona', (req, res) => {
-    PersonaSchema.find(function (err, datos){
-        if(err){
-            console.log("Error leyendo personas");
-        }else{
-            res.send(datos);
-        }
-    })
 });
 
 //CREATE
@@ -33,7 +28,7 @@ router.post('/persona', (req, res) => {
     let nuevaPersona = new PersonaSchema({
         idPersona: req.body.id,
         tipoDocumento: req.body.tipoD,
-        nombresPersona: req.body.nombresP,
+        nombres: req.body.nombresP,
         apellidos: req.body.apellidosP,
         direccion: req.body.direccionP,
         correo: req.body.correoP,
@@ -52,7 +47,29 @@ router.post('/persona', (req, res) => {
 
 });
 
-app.use(router);
-app.listen(3000, () => {
-    console.log("Server is running in port 3000!");
+//READ
+router.get('/persona', (req, res) => {
+    PersonaSchema.find(function (err, datos){
+        if(err){
+            console.log("Error leyendo personas");
+        }else{
+            res.send(datos);
+        }
+    })
+});
+
+//UPDATE
+router.put('/persona/:id', function(req, res, next){
+    PersonaSchema.findByIdAndUpdate({_id: req.params.id},req.body).then(function(){
+        PersonaSchema.findOne({_id: req.params.id}).then(function(persona){
+            res.send(persona);
+        });
+    });
+});
+
+//DELETE
+router.delete('/persona/:id', function(req, res, next){
+    PersonaSchema.findByIdAndRemove({_id: req.params.id}).then(function(persona) {
+        res.send(persona);        
+    });
 });
