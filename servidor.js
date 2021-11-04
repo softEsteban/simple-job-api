@@ -28,6 +28,7 @@ router.post('/persona', (req, res) => {
     let nuevaPersona = new PersonaSchema({
         idPersona: req.body.id,
         tipoDocumento: req.body.tipoD,
+        documento: req.body.document,
         nombres: req.body.nombresP,
         apellidos: req.body.apellidosP,
         direccion: req.body.direccionP,
